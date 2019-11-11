@@ -207,7 +207,7 @@ def parse_input(students_list_path, company_reps_list_path):
 	return suits, dresses
 
 def print_result_to_file(result):
-	name = 'output/' + datetime.now.strftime("%H:%M:%S") + '-' (+ str(result['points']) + ".csv"
+	name = 'output/' + datetime.now.strftime("%H:%M:%S") + '-' + str(result['points']) + ".csv"
 
 	name_tables = "output/tables: " + str(result['points']) + ".csv"
 	tables = [{'name': 'Cosmic Dust', 'seats': 30, 'tables': 5, 'front': True},
