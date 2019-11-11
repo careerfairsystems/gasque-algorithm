@@ -146,7 +146,8 @@ def parse_input(students_list_path, company_reps_list_path):
 	suits = []
 	dresses = []
 
- 	with open(students_list_path) as attending_students_csv:
+
+	with open(students_list_path) as attending_students_csv:
 		attending_students = csv.DictReader(attending_students_csv)
 		for row in attending_students:
 			student_params = {'name': row['Name'], 
@@ -160,7 +161,7 @@ def parse_input(students_list_path, company_reps_list_path):
 			else:
 				dresses.append(student_params)
 		
-  	with open(company_reps_list_path) as company_reps_csv:
+	with open(company_reps_list_path) as company_reps_csv:
 		comany_reps = csv.DictReader(company_reps_csv)
 		company_rep_not_specified = []
 
@@ -251,7 +252,7 @@ def print_result_to_file(result):
 			else:
 				table_name = current_table['name'] + " " + str(6 - current_table['tables'])
 			
- 			for chair, index in zip(current_table_placement, range(1, len(current_table_placement)+1)):
+			for chair, index in zip(current_table_placement, range(1, len(current_table_placement)+1)):
 				if chair['type'] != 'student': 
 					chair_type = 'Company'
 				else:
