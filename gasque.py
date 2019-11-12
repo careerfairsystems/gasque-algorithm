@@ -238,7 +238,7 @@ def parse_input(students_list_path, company_reps_list_path):
                 name = row['Company']
 
             company_rep_params = {'name': name,
-                                'gender': row['Gender'],
+                                'gender': '', #row['Gender'],
                                   'affiliation': guilds,
                                   'type': 'company_rep',
                                   'mail': row['Mail'],
@@ -434,7 +434,7 @@ def main(iterations, students_list_path, company_reps_list_path):
 
 
 if __name__ == '__main__':
-    iterations = 1000000
+    iterations = 100000
     students_list_path = "input/students.csv"
     company_reps_list_path = "input/company_reps.csv"
     main(iterations, students_list_path, company_reps_list_path)

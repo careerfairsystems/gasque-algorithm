@@ -2,6 +2,10 @@
 
 A simple algorithm for the placement of the ARKAD gasque
 
+## Note från ARKAD 2019
+
+Var en del som inte var löst som nu borde fungera. Programmet skriver ut två filer för olika format / ändåmål. Den ena var till för att vara en lätt lista, gjord i csv så den kan läsas av Excel. Den andre är på JSON format med några attribut som gjorde det lättare att mejla ut folks placering i Jexpo.
+
 ## I/O files
 
 The program takes to inputs. One csv with the students and one with the company representatives.
