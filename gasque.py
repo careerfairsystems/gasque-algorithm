@@ -238,7 +238,7 @@ def parse_input(students_list_path, company_reps_list_path):
                 name = row['Company']
 
             company_rep_params = {'name': name,
-                                'gender': '', #row['Gender'],
+                                'gender': row['Gender'],
                                   'affiliation': guilds,
                                   'type': 'company_rep',
                                   'mail': row['Mail'],
