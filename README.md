@@ -104,4 +104,5 @@ Alla dessa metoder börjar med <i>evaluate\_</i> prefixen.
 ## Contribution
 
 Programmet skriven av Martin Johansson 2018
+
 Fortsatt utveckling av Viktor Claesson 2019
