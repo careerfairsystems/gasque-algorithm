@@ -288,9 +288,7 @@ def print_result_to_email(result, tables):
                 if not current_table:
                     current_table = table
                 else:
-                    if table['priority'] < current_table['priority']:
-                        current_table = table
-                    elif table['priority'] == current_table['priority'] and (table['tables'] - table['table_count']) > (current_table['tables'] - current_table['table_count']):
+                    if (table['tables'] - table['table_count']) > (current_table['tables'] - current_table['table_count']):
                         current_table = table
             if(not current_table):
                 print('UNABLE TO FINISH, NO MORE TABLES')
@@ -379,7 +377,7 @@ def main(iterations, students_list_path, company_reps_list_path):
     #           {'name': 'Autumn', 'seats': 100, 'tables': 5, 'priority': 1},
     #           {'name': 'Spring', 'seats': 100, 'tables': 5, 'priority': 2},
     #           {'name': 'Winter', 'seats': 100, 'tables': 3, 'priority': 1}]
-    tables = [{'name': 'Banquet', 'seats': 45, 'tables': 12, 'priority': 2}]
+    tables = [{'name': 'Banquet', 'seats': 45, 'tables': 12}]
 
     res_temp1 = copy.deepcopy(result)
     res_temp2 = copy.deepcopy(result)
