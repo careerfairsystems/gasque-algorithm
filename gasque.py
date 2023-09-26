@@ -86,23 +86,24 @@ def list_getter(list, index):
 
 def evaluate(left, right, pos, ratio, guild_points):
     current_side, other_side = (right, left) if pos[0] else (left, right)
-    return evalutate_gender(current_side, other_side, pos[1])
-    + evaluate_type(current_side, other_side, pos[1], ratio)
-    + evaluate_programme(current_side, other_side, pos[1], guild_points)
+    # return evalutate_gender(current_side, other_side, pos[1])
+    # + evaluate_type(current_side, other_side, pos[1], ratio)
+    # + evaluate_programme(current_side, other_side, pos[1], guild_points)
+    return evaluate_type(current_side, other_side, pos[1], ratio) + evaluate_programme(current_side, other_side, pos[1], guild_points)
 
 
-def evalutate_gender(current_side, other_side, index):
-    current_person = current_side[index]
+# def evalutate_gender(current_side, other_side, index):
+#     current_person = current_side[index]
 
-    relevant_people = list(filter(lambda i: i != None, [
-        list_getter(current_side, index - 1),
-        list_getter(current_side, index + 1),
-        list_getter(other_side, index)
-    ]))
+#     relevant_people = list(filter(lambda i: i != None, [
+#         list_getter(current_side, index - 1),
+#         list_getter(current_side, index + 1),
+#         list_getter(other_side, index)
+#     ]))
 
-    return len(list(filter(
-        lambda person: current_person['gender'] != person['gender'], relevant_people
-    ))) * 10
+#     return len(list(filter(
+#         lambda person: current_person['gender'] != person['gender'], relevant_people
+#     ))) * 10
 
 
 def evaluate_type(current_side, other_side, index, ratio):
@@ -116,14 +117,11 @@ def evaluate_type(current_side, other_side, index, ratio):
         list_getter(other_side, index + 1)
     ]))
 
-    same = len(
-        list(filter(lambda i: i['type'] == current_person['type']), relevant_people))
-    diff = len(
-        list(filter(lambda i: i['type'] != current_person['type']), relevant_people))
+    same = len(list(filter(lambda i: i['type'] == current_person['type'], relevant_people)))
+    diff = len(list(filter(lambda i: i['type'] != current_person['type'], relevant_people)))
     n = len(relevant_people)
 
     points = 50 - 4 * (abs(same - n * ratio)**2 + abs(diff - n * ratio)**2)
-    print(points)
     return points
 
 
@@ -193,24 +191,18 @@ def evaluate_ratio(people):
 
 
 def parse_input(students_list_path, company_reps_list_path):
-    suits = []
-    dresses = []
+    attendees = []
 
     with open(students_list_path) as attending_students_csv:
         attending_students = csv.DictReader(attending_students_csv)
         for row in attending_students:
             student_params = {
-                                'name': row['Name'],
-                                'gender': row['Gender'],
-                                'affiliation': row['Guild'],
-                                'mail': row['Mail'],
+                                'name': row['NAMN'],
+                                'affiliation': row['KLASS'],
+                                'mail': row['E-POST'],
                                 'type': 'student',
-                                'drinking_package': row['Alcohol']
                             }
-            if student_params['gender'] == 'Man':
-                suits.append(student_params)
-            else:
-                dresses.append(student_params)
+            attendees.append(student_params)
 
     with open(company_reps_list_path) as company_reps_csv:
         comany_reps = csv.DictReader(company_reps_csv)
@@ -221,11 +213,7 @@ def parse_input(students_list_path, company_reps_list_path):
                                          'Information and Communication Engineering': 'D', 'Computer Science and Engineering': 'D', 'Datateknik': 'D', 'Industrial Engineering and Management': 'I', 'Engineering Nanoscience': 'F', 'Architect': 'A', 'Chemical Engineering': 'K', 'Civil Engineering - Architecture': 'Ing', 'Maskinteknik med teknisk design': 'M', 'Lantm\xc3\xa4teri': 'V', 'Biotechnology': 'K', 'Medicin och teknik': 'E', 'Biomedical Engineering': 'E', 'Industridesign': 'A', 'Maskinteknik': 'M', 'Teknisk Matematik': 'F', 'Civil Engineering': 'V', 'Ekosystemteknik': 'W', 'Surveying': 'V', 'Electrical Engineering': 'E', 'Environmental Engineering': 'W', 'Arkitekt': 'A', 'Civil Engineering - Railway Construction': 'Ing'}
 
         for row in comany_reps:
-            if row['Alcohol'].lower == "alkoholfritt":
-                drinking_package = "no"
-            else:
-                drinking_package = "yes"
-            desired_programmes = row['Desired programme'].split(",")
+            desired_programmes = row['profile.desiredProgramme'].split(",")
             guilds = []
             for programme in desired_programmes:
                 if programme in desired_programme_guild_mapping:
@@ -233,31 +221,15 @@ def parse_input(students_list_path, company_reps_list_path):
                     if guild not in guilds:
                         guilds.append(guild)
 
-            name = row['Name']
-            if not name or name == '-':
-                name = row['Company']
+            name = row['name']
 
             company_rep_params = {'name': name,
-                                'gender': row['Gender'],
                                   'affiliation': guilds,
-                                  'type': 'company_rep',
-                                  'mail': row['Mail'],
-                                  'company': row['Company'],
-                                  'drinking_package': drinking_package}
+                                  'type': 'company_rep',}
 
-            if company_rep_params['gender'].lower() == 'man':
-                suits.append(company_rep_params)
-            elif company_rep_params['gender'].lower() == 'woman':
-                dresses.append(company_rep_params)
-            else:
-                company_rep_not_specified.append(company_rep_params)
-    while company_rep_not_specified:
-        if len(suits) > len(dresses):
-            dresses.append(company_rep_not_specified.pop())
-        else:
-            suits.append(company_rep_not_specified.pop())
+            attendees.append(company_rep_params)
 
-    return suits, dresses
+    return attendees, attendees
 
 ### PRINTING RESULTS ###
 
@@ -306,7 +278,6 @@ def print_result_to_list(result, tables):
                     person['name'],
                     table_name,
                     index+1,
-                    person['drinking_package'],
                     person['type']
                 ])
 
@@ -421,16 +392,19 @@ def main(iterations, students_list_path, company_reps_list_path):
     }
 
     # 5. Write out the best result to a csv file with table number and number on the table.
-    tables = [{'name': 'Summer', 'seats': 30, 'tables': 6, 'priority': 2},
-              {'name': 'Autumn', 'seats': 30, 'tables': 5, 'priority': 1},
-              {'name': 'Spring', 'seats': 30, 'tables': 5, 'priority': 2},
-              {'name': 'Winter', 'seats': 30, 'tables': 3, 'priority': 1}]
+    # tables = [{'name': 'Summer', 'seats': 100, 'tables': 6, 'priority': 2},
+    #           {'name': 'Autumn', 'seats': 100, 'tables': 5, 'priority': 1},
+    #           {'name': 'Spring', 'seats': 100, 'tables': 5, 'priority': 2},
+    #           {'name': 'Winter', 'seats': 100, 'tables': 3, 'priority': 1}]
+    tables = [{'name': 'Banquet', 'seats': 100, 'tables': 6, 'priority': 2}]
 
     res_temp1 = copy.deepcopy(result)
     res_temp2 = copy.deepcopy(result)
+    
+    print(res_temp1)
 
     print_result_to_list(res_temp1, tables)
-    print_result_to_email(res_temp2, tables)
+    # print_result_to_email(res_temp2, tables)
 
 
 if __name__ == '__main__':
