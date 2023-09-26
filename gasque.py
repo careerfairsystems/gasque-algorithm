@@ -244,44 +244,27 @@ def print_result_to_list(result, tables):
 
     f_name = file_name('list', 'csv', result)
     with open(f_name, "w+") as output_file:
-        print('Writiing to file ...', f_name)
+        print('Writing to file ...', f_name)
         output_writer = csv.writer(output_file)
-        output_writer.writerow(
-            ['Name', 'Table Name', 'Seat number', 'Alcohol', 'Student/Company'])
-        while result['left'] and result['right']:
-            current_table_placement = result['left'][:15] + \
-                result['right'][:15]
-            result['left'] = result['left'][15:]
-            result['right'] = result['right'][15:]
+        output_writer.writerow(['Name', 'Table Name', 'Seat number', 'Alcohol', 'Student/Company'])
 
-            current_table = None
-            for table in tables:
-                if table['tables'] - table['table_count'] == 0:
-                    continue
+        for current_table in tables:
+            for _ in range(current_table['tables']):
+                half_seats = current_table['seats'] // 2
+                remaining_seats = current_table['seats'] - half_seats  # This will account for any odd number of seats
+                current_table_placement = result['left'][:half_seats] + result['right'][:remaining_seats]
+                result['left'] = result['left'][half_seats:]
+                result['right'] = result['right'][remaining_seats:]
 
-                if not current_table:
-                    current_table = table
-                else:
-                    if table['priority'] < current_table['priority']:
-                        current_table = table
-                    elif table['priority'] == current_table['priority'] and (table['tables'] - table['table_count']) > (current_table['tables'] - current_table['table_count']):
-                        current_table = table
-            if(not current_table):
-                print('UNABLE TO FINISH, NO MORE TABLES')
-                return
+                table_name = current_table['name'] + " " + str(1 + current_table['table_count'])
 
-            table_name =current_table['name'] + " " + \
-                str(1 + current_table['table_count'])
+                for index, person in enumerate(current_table_placement):
+                    output_writer.writerow([person['name'], table_name, index+1, person['type']])
 
-            for index, person in enumerate(current_table_placement):
-                output_writer.writerow([
-                    person['name'],
-                    table_name,
-                    index+1,
-                    person['type']
-                ])
+                current_table['table_count'] += 1
 
-            current_table['table_count'] += 1
+
+
 
 
 def print_result_to_email(result, tables):
@@ -396,12 +379,12 @@ def main(iterations, students_list_path, company_reps_list_path):
     #           {'name': 'Autumn', 'seats': 100, 'tables': 5, 'priority': 1},
     #           {'name': 'Spring', 'seats': 100, 'tables': 5, 'priority': 2},
     #           {'name': 'Winter', 'seats': 100, 'tables': 3, 'priority': 1}]
-    tables = [{'name': 'Banquet', 'seats': 100, 'tables': 6, 'priority': 2}]
+    tables = [{'name': 'Banquet', 'seats': 45, 'tables': 12, 'priority': 2}]
 
     res_temp1 = copy.deepcopy(result)
     res_temp2 = copy.deepcopy(result)
     
-    print(res_temp1)
+    print(len(res_temp1['left']), len(res_temp1['right']))
 
     print_result_to_list(res_temp1, tables)
     # print_result_to_email(res_temp2, tables)
